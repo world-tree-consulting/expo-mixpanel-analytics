@@ -12,14 +12,14 @@ export class ExpoMixpanelAnalytics {
   token: string;
   userId: string | null;
   clientId: string;
-  userAgent: string;
-  appName: string;
-  appId: string;
-  appVersion: string;
-  screenSize: string;
-  deviceName: string;
-  platform: string;
-  model: string;
+  userAgent?: string;
+  appName?: string;
+  appId?: string;
+  appVersion?: string;
+  screenSize?: string;
+  deviceName?: string;
+  platform?: string;
+  model?: string;
   osVersion: string | number;
   queue: any[];
 
@@ -40,7 +40,7 @@ export class ExpoMixpanelAnalytics {
       this.appVersion = Constants.manifest.version;
       this.screenSize = `${width}x${height}`;
       this.deviceName = Constants.deviceName;
-      if (isIosPlatform) {
+      if (isIosPlatform && Constants.platform.ios) {
         this.platform = Constants.platform.ios.platform;
         this.model = Constants.platform.ios.model;
       } else {
