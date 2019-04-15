@@ -7,7 +7,22 @@ const { width, height } = Dimensions.get("window");
 const MIXPANEL_API_URL = "https://api.mixpanel.com";
 const isIosPlatform = Platform.OS === "ios";
 
-export default class ExpoMixpanelAnalytics {
+export class ExpoMixpanelAnalytics {
+  ready = false;
+  token: string;
+  userId: string | null;
+  clientId: string;
+  userAgent: string;
+  appName: string;
+  appId: string;
+  appVersion: string;
+  screenSize: string;
+  deviceName: string;
+  platform: string;
+  model: string;
+  osVersion: string | number;
+  queue: any[];
+
   constructor(token) {
     this.ready = false;
     this.queue = [];
@@ -15,6 +30,7 @@ export default class ExpoMixpanelAnalytics {
     this.token = token;
     this.userId = null;
     this.clientId = Constants.deviceId;
+    this.osVersion = Platform.Version;
     this.identify(this.clientId);
 
     Constants.getWebViewUserAgentAsync().then(userAgent => {
@@ -27,7 +43,6 @@ export default class ExpoMixpanelAnalytics {
       if (isIosPlatform) {
         this.platform = Constants.platform.ios.platform;
         this.model = Constants.platform.ios.model;
-        this.osVersion = Constants.platform.ios.systemVersion;
       } else {
         this.platform = "android";
       }
@@ -37,7 +52,7 @@ export default class ExpoMixpanelAnalytics {
     });
   }
 
-  track(name, props) {
+  track(name: string, props?: any) {
     this.queue.push({
       name,
       props
@@ -45,7 +60,7 @@ export default class ExpoMixpanelAnalytics {
     this._flush();
   }
 
-  identify(userId) {
+  identify(userId: string) {
     this.userId = userId;
   }
 
@@ -130,9 +145,9 @@ export default class ExpoMixpanelAnalytics {
       data.properties.os_version = this.osVersion;
     }
 
-    data = new Buffer(JSON.stringify(data)).toString("base64");
+    const buffer = new Buffer(JSON.stringify(data)).toString("base64");
 
-    return fetch(`${MIXPANEL_API_URL}/track/?data=${data}`);
+    return fetch(`${MIXPANEL_API_URL}/track/?data=${buffer}`);
   }
 
   _pushProfile(data) {
@@ -140,3 +155,5 @@ export default class ExpoMixpanelAnalytics {
     return fetch(`${MIXPANEL_API_URL}/engage/?data=${data}`);
   }
 }
+
+export default ExpoMixpanelAnalytics;
