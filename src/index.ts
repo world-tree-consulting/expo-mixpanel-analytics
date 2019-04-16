@@ -1,10 +1,11 @@
-import { Platform, Dimensions } from "react-native";
+import { Platform, Dimensions, AsyncStorage } from "react-native";
 import { Constants } from "expo";
 import { Buffer } from "buffer";
 
 const { width, height } = Dimensions.get("window");
 
 const MIXPANEL_API_URL = "https://api.mixpanel.com";
+const ASYNC_STORAGE_KEY = "mixpanel:super:props";
 const isIosPlatform = Platform.OS === "ios";
 
 export class ExpoMixpanelAnalytics {
@@ -22,6 +23,7 @@ export class ExpoMixpanelAnalytics {
   model?: string;
   osVersion: string | number;
   queue: any[];
+  superProps: any = {};
 
   constructor(token) {
     this.ready = false;
@@ -31,7 +33,7 @@ export class ExpoMixpanelAnalytics {
     this.userId = null;
     this.clientId = Constants.deviceId;
     this.osVersion = Platform.Version;
-    this.identify(this.clientId);
+    this.superProps;
 
     Constants.getWebViewUserAgentAsync().then(userAgent => {
       this.userAgent = userAgent;
@@ -47,9 +49,25 @@ export class ExpoMixpanelAnalytics {
         this.platform = "android";
       }
 
-      this.ready = true;
-      this._flush();
+      AsyncStorage.getItem(ASYNC_STORAGE_KEY, (_, result) => {
+        if (result) {
+          try {
+            this.superProps = JSON.parse(result) || {};
+          } catch {}
+        }
+
+        this.ready = true;
+        this.identify(this.clientId);
+        this._flush();
+      });
     });
+  }
+
+  register(props: any) {
+    this.superProps = props;
+    try {
+      AsyncStorage.setItem(ASYNC_STORAGE_KEY, JSON.stringify(props));
+    } catch {}
   }
 
   track(name: string, props?: any) {
@@ -122,7 +140,10 @@ export class ExpoMixpanelAnalytics {
   _pushEvent(event) {
     let data = {
       event: event.name,
-      properties: event.props || {}
+      properties: {
+        ...(event.props || {}),
+        ...this.superProps
+      }
     };
     if (this.userId) {
       data.properties.distinct_id = this.userId;
