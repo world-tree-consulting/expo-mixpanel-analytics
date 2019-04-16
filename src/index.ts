@@ -84,6 +84,9 @@ export class ExpoMixpanelAnalytics {
 
   reset() {
     this.identify(this.clientId);
+    try {
+      AsyncStorage.setItem(ASYNC_STORAGE_KEY, JSON.stringify({}));
+    } catch {}
   }
 
   people_set(props) {
