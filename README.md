@@ -6,14 +6,14 @@ Mixpanel integration for use with React Native apps built on Expo.
 ## Installation
 
 ```
-npm install expo-mixpanel-analytics --save
+npm install @benawad/expo-mixpanel-analytics --save
 ```
 
 ## Import
 
 Your React Native app's screen resolution, app name, app ID, app version, device information and multiple other parameters will be automatically resolved and sent with each event.
 ```
-import ExpoMixpanelAnalytics from 'expo-mixpanel-analytics';
+import ExpoMixpanelAnalytics from '@benawad/expo-mixpanel-analytics';
 ```
 
 ## Usage
@@ -21,6 +21,8 @@ import ExpoMixpanelAnalytics from 'expo-mixpanel-analytics';
 const analytics = new ExpoMixpanelAnalytics("5224da5bbbed3fdeaad0911820f1bf2x");
 
 analytics.identify("13793");
+
+analytics.register({ email: "bob@bob.com" }); // super props sent on every request and persisted in AsyncStorage
 
 analytics.track("Signed Up", { "Referred By": "Friend" });
 
