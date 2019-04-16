@@ -22,6 +22,8 @@ const analytics = new ExpoMixpanelAnalytics("5224da5bbbed3fdeaad0911820f1bf2x");
 
 analytics.identify("13793");
 
+analytics.register({ email: "bob@bob.com" }); // super props sent on every request and persisted in AsyncStorage
+
 analytics.track("Signed Up", { "Referred By": "Friend" });
 
 analytics.people_set({ "$first_name": "Joe", "$last_name": "Doe", "$email": "joe.doe@example.com", "$created": "2013-04-01T13:20:00", "$phone": "4805551212", "Address": "1313 Mockingbird Lane", "Birthday": "1948-01-01" });
