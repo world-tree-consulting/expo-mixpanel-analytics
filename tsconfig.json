@@ -2,7 +2,6 @@
   "compilerOptions": {
     "sourceMap": true,
     "removeComments": true,
-    "rootDir": "./src",
 
     "noImplicitAny": false,
     "strict": true,
