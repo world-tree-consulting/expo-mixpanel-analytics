@@ -11,9 +11,9 @@ const isIosPlatform = Platform.OS === "ios";
 export class ExpoMixpanelAnalytics {
   ready = false;
   token: string;
-  userId: string | null;
-  clientId: string;
-  userAgent?: string;
+  userId?: string | null;
+  clientId?: string;
+  userAgent?: string | null;
   appName?: string;
   appId?: string;
   appVersion?: string;
@@ -42,7 +42,7 @@ export class ExpoMixpanelAnalytics {
       this.appVersion = Constants.manifest.version;
       this.screenSize = `${width}x${height}`;
       this.deviceName = Constants.deviceName;
-      if (isIosPlatform && Constants.platform.ios) {
+      if (isIosPlatform && Constants.platform && Constants.platform.ios) {
         this.platform = Constants.platform.ios.platform;
         this.model = Constants.platform.ios.model;
       } else {
@@ -78,7 +78,7 @@ export class ExpoMixpanelAnalytics {
     this._flush();
   }
 
-  identify(userId: string) {
+  identify(userId?: string) {
     this.userId = userId;
   }
 
