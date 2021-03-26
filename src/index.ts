@@ -12,6 +12,7 @@ export class ExpoMixpanelAnalytics {
   ready = false;
   token: string;
   userId?: string | null;
+  aliasId?: string | null;
   clientId?: string;
   userAgent?: string | null;
   appName?: string;
@@ -31,6 +32,7 @@ export class ExpoMixpanelAnalytics {
 
     this.token = token;
     this.userId = null;
+    this.aliasId = null;
     this.clientId = Constants.deviceId;
     this.osVersion = Platform.Version;
     this.superProps;
@@ -80,6 +82,17 @@ export class ExpoMixpanelAnalytics {
 
   identify(userId?: string) {
     this.userId = userId;
+  }
+
+  alias( props?: any ) {
+    this.queue.push({
+      name: '$create_alias',
+      props: {
+        alias: this.clientId,
+        ...props
+      }
+    });
+    this._flush();
   }
 
   reset() {
